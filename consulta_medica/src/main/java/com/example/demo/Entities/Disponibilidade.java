@@ -1,4 +1,8 @@
+//Douglas José
+
 package com.example.demo.Entities;
+
+import java.time.LocalTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,23 +17,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "disponibilidades")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "medico")
-public class Medico {
+public class Disponibilidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String nome;
-
-    @Column(nullable = false, unique = true)
-    private String crm;
-
     @ManyToOne
-    @JoinColumn(name = "especialidade_id", nullable = false)
-    private Especialidade especialidade;
+    @JoinColumn(name = "medico_id", nullable = false)
+    private Medico medico;
+
+    @Column(nullable = false)
+    private String diaSemana;
+
+    @Column(nullable = false)
+    private LocalTime horarioInicio;
+
+    @Column(nullable = false)
+    private LocalTime horarioFim;
 }
