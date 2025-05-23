@@ -1,10 +1,10 @@
-//Douglas José
+// Douglas José
 
 package com.example.demo.Entities;
 
 import java.time.LocalDateTime;
 
-import org.apache.logging.log4j.status.StatusData;
+import com.example.demo.Enums.StatusConsulta;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,7 +44,7 @@ public class Consulta {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StatusData status;
+    private StatusConsulta status;
 
     private String observacoes;
 }
