@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.Entities.Especialidade;
 
 @Repository
-public interface EspecialidadeRepository extends JpaRepository<Especialidade, Long> {
+public interface IEspecialidadeRepository extends JpaRepository<Especialidade, Long> {
 }

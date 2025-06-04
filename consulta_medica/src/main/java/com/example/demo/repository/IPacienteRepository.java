@@ -12,6 +12,7 @@ import com.example.demo.Entities.Paciente;
 @Repository
 public interface IPacienteRepository extends JpaRepository<Paciente, Long> {
 
+    boolean existsByCpf(String cpf);
     // busca um paciente pelo cpf
     Optional<Paciente> findByCpf(String cpf);
 }
