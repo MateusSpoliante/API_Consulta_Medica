@@ -29,6 +29,10 @@ public class PacienteService {
     }
 
     public PacienteDTO salvar(PacienteDTO pacienteDTO) {
+        if (pacienteRepository.existsByCpf(pacienteDTO.getCpf())) {
+            throw new IllegalArgumentException("CPF já cadastrado");
+        }
+
         Paciente paciente = pacienteMapper.toEntity(pacienteDTO);
         return pacienteMapper.toDto(pacienteRepository.save(paciente));
     }
@@ -37,17 +41,22 @@ public class PacienteService {
         pacienteRepository.deleteById(id);
     }
 
-   public PacienteDTO atualizar(PacienteDTO pacienteDTO) {
+    public PacienteDTO atualizar(PacienteDTO pacienteDTO) {
 
-    Paciente pacienteExistente = pacienteRepository.findById(pacienteDTO.getId()).orElseThrow(() -> new IllegalArgumentException("Paciente não encontrado"));
+        Paciente pacienteExistente = pacienteRepository.findById(pacienteDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Paciente não encontrado"));
 
-    pacienteExistente.setNome(pacienteDTO.getNome());
-    pacienteExistente.setCpf(pacienteDTO.getCpf());
-    pacienteExistente.setEmail(pacienteDTO.getEmail());
-    pacienteExistente.setTelefone(pacienteDTO.getTelefone());
+        if (pacienteRepository.existsByCpf(pacienteDTO.getCpf())) {
+            throw new IllegalArgumentException("CPF já cadastrado");
+        }
 
-    Paciente pacienteAtualizado = pacienteRepository.save(pacienteExistente);
-    return pacienteMapper.toDto(pacienteAtualizado);
-   }
+        pacienteExistente.setNome(pacienteDTO.getNome());
+        pacienteExistente.setCpf(pacienteDTO.getCpf());
+        pacienteExistente.setEmail(pacienteDTO.getEmail());
+        pacienteExistente.setTelefone(pacienteDTO.getTelefone());
+
+        Paciente pacienteAtualizado = pacienteRepository.save(pacienteExistente);
+        return pacienteMapper.toDto(pacienteAtualizado);
+    }
 
 }

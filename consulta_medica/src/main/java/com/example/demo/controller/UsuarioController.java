@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 
 @Tag(name = "Usuários", description = "Endpoints para gerenciamento de usuários")
 @RestController
-@RequestMapping("api/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     @Autowired
@@ -69,4 +69,26 @@ public class UsuarioController {
         usuarioService.deletar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Atualiza usuário", description = "Atualiza os dados de um usuário")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<UsuarioDTO>> atualizarUsuario(@PathVariable Long id,
+            @Valid @RequestBody UsuarioDTO usuarioDTO) {
+        try {
+            usuarioDTO.setId(id);
+
+            UsuarioDTO atualizado = usuarioService.atualizar(usuarioDTO);
+
+            return ResponseEntity.ok(new ApiResponse<>(atualizado));
+
+        } catch (IllegalArgumentException e) {
+            ErrorResponse erro = new ErrorResponse("Erro de validação", e.getMessage());
+            return ResponseEntity.badRequest().body(new ApiResponse<>(erro));
+
+        } catch (Exception e) {
+            ErrorResponse erro = new ErrorResponse("Erro Interno", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(erro));
+        }
+    }
+
 }

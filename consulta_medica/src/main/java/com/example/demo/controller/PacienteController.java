@@ -92,7 +92,7 @@ public class PacienteController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(erro));
 
         } catch (Exception e) {
-            ErrorResponse erro = new ErrorResponse("Erro de validação", e.getMessage());
+            ErrorResponse erro = new ErrorResponse("Erro Interno", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(erro));
         }
     }
