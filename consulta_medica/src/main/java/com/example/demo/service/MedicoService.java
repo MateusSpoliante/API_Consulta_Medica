@@ -32,6 +32,7 @@ public class MedicoService {
         return medicoRepository.findById(id)
                 .map(MedicoMapper::toDTO);
     }
+
     public MedicoResponseDTO salvar(MedicoRequestDTO dto){
         Especialidade especialidade = especialidadeRepository.findById(dto.getEspecialidadeId())
                 .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));

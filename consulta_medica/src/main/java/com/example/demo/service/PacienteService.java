@@ -10,6 +10,7 @@ import com.example.demo.Entities.Paciente;
 import com.example.demo.dto.PacienteDTO;
 import com.example.demo.mapper.PacienteMapper;
 import com.example.demo.repository.IPacienteRepository;
+import com.example.demo.service.Utils.CpfFormatter;
 
 @Service
 public class PacienteService {
@@ -34,6 +35,10 @@ public class PacienteService {
         }
 
         Paciente paciente = pacienteMapper.toEntity(pacienteDTO);
+
+        // FORMATA CPF
+        paciente.setCpf(CpfFormatter.formatarCpf(pacienteDTO.getCpf()));
+
         return pacienteMapper.toDto(pacienteRepository.save(paciente));
     }
 
