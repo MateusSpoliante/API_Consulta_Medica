@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Disponibilidades", description = "Endpoints para gerenciamento de disponibilidades de médicos")
 @RestController
-@RequestMapping("/disponibilidades")
+@RequestMapping("/api/disponibilidades")
 public class DisponibilidadeController {
 
     @Autowired

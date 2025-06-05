@@ -24,7 +24,7 @@ import jakarta.validation.Valid;
 
 @Tag(name = "Consultas", description = "Endpoints para gerenciamento de consultas")
 @RestController
-@RequestMapping("/consultas")
+@RequestMapping("/api/consultas")
 public class ConsultaController {
 
     @Autowired
