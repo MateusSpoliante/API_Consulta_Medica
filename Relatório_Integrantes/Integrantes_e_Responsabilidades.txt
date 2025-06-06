@@ -1,0 +1,25 @@
+Integrantes e Responsabilidades
+
+Mateus Spoliante 176711-2024:
+
+• Implementou a entidade Paciente.
+• Criou os DTOs, Mapper, Repository, Service e Controller para Paciente.
+• Implementou a formatação de CPF no DTO.
+• Desenvolveu os DTOs Resumo (PacienteResumoDTO, MedicoResumoDTO) para retorno
+mais organizado na API de consultas.
+
+Gabriel Crespin 144770-2023:
+
+• Desenvolveu a entidade Médico e a entidade Especialidade.
+• Implementou o relacionamento entre Médico e Especialidade.
+• Criou os respectivos DTOs, Mapper, Repository, Service e Controller.
+• - Verificou se o médico está disponível no horário solicitado.
+
+Douglas José 166128-2024:
+
+• Desenvolveu a entidade Consulta e a entidade Disponibilidade.
+• Criou os DTOs, Service e Controller de Consulta.
+• Implementou as seguintes validações de agendamento:
+• - Impediu agendamentos fora do horário comercial (08h às 18h).
+• - Impediu agendamentos em datas passadas.
+• - Permitiu que pacientes cancelem consultas até 24h antes.
