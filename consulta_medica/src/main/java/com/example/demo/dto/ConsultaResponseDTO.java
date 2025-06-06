@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ConsultaDTO {
+public class ConsultaResponseDTO {
 
     private Long id;
-    private PacienteDTO paciente;
-    private MedicoResponseDTO medico;
+    private PacienteResumoDTO paciente;
+    private MedicoResumoDTO medico;
     private LocalDateTime dataHora;
     private StatusConsulta status;
     private String observacoes;

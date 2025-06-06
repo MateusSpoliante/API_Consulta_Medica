@@ -5,14 +5,14 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 import com.example.demo.Entities.Consulta;
-import com.example.demo.dto.ConsultaDTO;
+import com.example.demo.dto.ConsultaResponseDTO;
 
 @Mapper(componentModel = "spring")
 public interface ConsultaMapper {
 
-    ConsultaDTO toDTO(Consulta consulta);
+    ConsultaResponseDTO toDTO(Consulta consulta);
 
-    Consulta toEntity(ConsultaDTO dto);
+    Consulta toEntity(ConsultaResponseDTO dto);
 
-    List<ConsultaDTO> toDTOList(List<Consulta> consultas);
+    List<ConsultaResponseDTO> toDTOList(List<Consulta> consultas);
 }

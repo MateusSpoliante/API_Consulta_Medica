@@ -1,14 +1,16 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.ConsultaDTO;
-import com.example.demo.mapper.ConsultaMapper;
-import com.example.demo.repository.IConsultaRepository;
-import com.example.demo.repository.IMedicoRepository;
-import com.example.demo.repository.IPacienteRepository;
 import com.example.demo.Entities.Consulta;
 import com.example.demo.Entities.Medico;
 import com.example.demo.Entities.Paciente;
 import com.example.demo.Enums.StatusConsulta;
+import com.example.demo.dto.ConsultaRequestDTO;
+import com.example.demo.dto.ConsultaResponseDTO;
+import com.example.demo.mapper.ConsultaMapper;
+import com.example.demo.repository.IConsultaRepository;
+import com.example.demo.repository.IMedicoRepository;
+import com.example.demo.repository.IPacienteRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,46 +33,54 @@ public class ConsultaService {
     @Autowired
     private ConsultaMapper consultaMapper;
 
-    public ConsultaDTO agendarConsulta(ConsultaDTO consultaDTO) {
+    public ConsultaResponseDTO agendarConsulta(ConsultaRequestDTO consultaDTO) {
+        // Regra de horário comercial
         if (consultaDTO.getDataHora().getHour() < 8 || consultaDTO.getDataHora().getHour() > 18) {
-            throw new IllegalArgumentException("O agendamento deve ser feito dentro do horário comercial.");
+            throw new IllegalArgumentException("O agendamento deve ser feito dentro do horário comercial (08h às 18h).");
         }
 
+        // Regra de datas futuras
         if (consultaDTO.getDataHora().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Não é possível agendar consultas para datas passadas.");
         }
 
-        Medico medico = medicoRepository.findById(consultaDTO.getMedico().getId())
+        // Buscar entidades associadas
+        Medico medico = medicoRepository.findById(consultaDTO.getIdMedico())
                 .orElseThrow(() -> new IllegalArgumentException("Médico não encontrado."));
-        
-        
-        Paciente paciente = pacienteRepository.findById(consultaDTO.getPaciente().getId())
+
+        Paciente paciente = pacienteRepository.findById(consultaDTO.getIdPaciente())
                 .orElseThrow(() -> new IllegalArgumentException("Paciente não encontrado."));
 
-        Consulta consulta = consultaMapper.toEntity(consultaDTO);
-        consulta.setPaciente(paciente);
+        // Montar entidade
+        Consulta consulta = new Consulta();
         consulta.setMedico(medico);
-        consulta.setStatus(StatusConsulta.AGENDADA);
+        consulta.setPaciente(paciente);
+        consulta.setDataHora(consultaDTO.getDataHora());
+        consulta.setStatus(consultaDTO.getStatus() != null ? consultaDTO.getStatus() : StatusConsulta.AGENDADA);
+        consulta.setObservacoes(consultaDTO.getObservacoes());
 
-        consulta = consultaRepository.save(consulta);
-        return consultaMapper.toDTO(consulta);
+        // Salvar no banco
+        Consulta consultaSalva = consultaRepository.save(consulta);
+
+        // Retornar DTO de resposta
+        return consultaMapper.toDTO(consultaSalva);
     }
 
-    public List<ConsultaDTO> listarConsultas() {
+    public List<ConsultaResponseDTO> listarConsultas() {
         List<Consulta> consultas = consultaRepository.findAll();
         return consultaMapper.toDTOList(consultas);
     }
 
-    public Optional<ConsultaDTO> buscarConsultaPorId(Long id) {
+    public Optional<ConsultaResponseDTO> buscarConsultaPorId(Long id) {
         return consultaRepository.findById(id).map(consultaMapper::toDTO);
     }
 
     public void cancelarConsulta(Long id) {
         Consulta consulta = consultaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Consulta não encontrada."));
-        
+
         if (consulta.getDataHora().isBefore(LocalDateTime.now().plusHours(24))) {
-            throw new IllegalArgumentException("Cancelamento somente até 24h antes da consulta.");
+            throw new IllegalArgumentException("Cancelamento permitido apenas com 24h de antecedência.");
         }
 
         consulta.setStatus(StatusConsulta.CANCELADA);

@@ -5,15 +5,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.dto.ConsultaDTO;
+import com.example.demo.dto.ConsultaRequestDTO;
+import com.example.demo.dto.ConsultaResponseDTO;
 import com.example.demo.service.ConsultaService;
 import com.example.demo.service.Utils.ApiResponse;
 import com.example.demo.service.Utils.ErrorResponse;
@@ -32,26 +27,28 @@ public class ConsultaController {
 
     @Operation(summary = "Agendar uma consulta", description = "Agendar uma nova consulta para um paciente com um médico específico")
     @PostMapping
-    public ResponseEntity<ApiResponse<ConsultaDTO>> agendarConsulta(@Valid @RequestBody ConsultaDTO consultaDTO) {
+    public ResponseEntity<ApiResponse<ConsultaResponseDTO>> agendarConsulta(
+            @Valid @RequestBody ConsultaRequestDTO consultaDTO) {
         try {
-            ConsultaDTO consultaAgendada = consultaService.agendarConsulta(consultaDTO);
+            ConsultaResponseDTO consultaAgendada = consultaService.agendarConsulta(consultaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(consultaAgendada));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(new ErrorResponse("Argumento inválido", e.getMessage())));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(new ErrorResponse("Erro interno", e.getMessage())));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(new ErrorResponse("Erro interno", e.getMessage())));
         }
     }
 
     @Operation(summary = "Buscar consulta por ID", description = "Retorna os detalhes de uma consulta pelo ID")
     @GetMapping("/{id}")
-    public ResponseEntity<ConsultaDTO> buscarConsultaPorId(@PathVariable Long id) {
-        Optional<ConsultaDTO> consultaDTO = consultaService.buscarConsultaPorId(id);
+    public ResponseEntity<ConsultaResponseDTO> buscarConsultaPorId(@PathVariable Long id) {
+        Optional<ConsultaResponseDTO> consultaDTO = consultaService.buscarConsultaPorId(id);
         return consultaDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Cancelar consulta", description = "Cancelar uma consulta já agendada")
-    @PutMapping("/cancelar/{id}")
+    @PutMapping("cancelar/{id}")
     public ResponseEntity<Void> cancelarConsulta(@PathVariable Long id) {
         try {
             consultaService.cancelarConsulta(id);
